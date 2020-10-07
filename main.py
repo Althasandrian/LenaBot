@@ -38,7 +38,7 @@ async def on_ready():
 @bot.command(name='prices')
 async def prices(ctx):
     data = updatePrices(ORE_RANGE)
-    response = 'Purchasing all ore at following prices. Contract any amount to Lena70 Xiahou at the listed Buy Order Price in Berta, Maspah or Camal.\n'
+    response = 'Purchasing all ore at following prices. Contract any amount to **Lena70 Xiahou** at the listed Buy Order Price in **Berta, Maspah or Camal.**\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[3])
     await ctx.send(response)
