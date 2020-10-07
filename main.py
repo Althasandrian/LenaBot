@@ -7,7 +7,8 @@ import json
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
-from discord.ext import commands
+from discord.ext import commands, tasks
+from itertools import cycle
 
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
@@ -34,6 +35,11 @@ def main():
 @bot.event
 async def on_ready():
     print("LenaBot has connected to Discord")
+
+@tasks.loop(minutes=10)
+async def updateStandings():
+
+    await ctx.send("asd")
 
 @bot.command(name='prices')
 async def prices(ctx):
@@ -75,7 +81,7 @@ async def salvageMarketPrices(ctx):
         response = response + '{} {} \n'.format(row[0], row[1])
     await ctx.send(response)
 
-def updatePrices(range):
+def getSheetsCredentials():
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -91,7 +97,10 @@ def updatePrices(range):
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
+    return creds
 
+def updatePrices(range):
+    creds = getSheetsCredentials()
     service = build('sheets', 'v4', credentials=creds)
     # Call the Sheets API
     sheet = service.spreadsheets()
