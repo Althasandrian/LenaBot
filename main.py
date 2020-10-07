@@ -81,7 +81,7 @@ async def salvageMarketPrices(ctx):
         response = response + '{} {} \n'.format(row[0], row[1])
     await ctx.send(response)
 
-def getSheetsCredentials():
+def getSheetsService():
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -97,11 +97,10 @@ def getSheetsCredentials():
         # Save the credentials for the next run
         with open('token.pickle', 'wb') as token:
             pickle.dump(creds, token)
-    return creds
+    return build('sheets', 'v4', credentials=creds)
 
 def updatePrices(range):
-    creds = getSheetsCredentials()
-    service = build('sheets', 'v4', credentials=creds)
+    service = getSheetsService()
     # Call the Sheets API
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
