@@ -18,6 +18,13 @@ with open('credentials.json', 'rb') as json_file:
     DISCORD_TOKEN = data.get('discord').get('token')
     SPREADSHEET_ID = data.get('spreadsheets').get('sheet_id')
     ORE_RANGE = data.get('spreadsheets').get('ore_range')
+    MINERAL_RANGE = data.get('spreadsheets').get('mineral_range')
+    PLANETARY_RANGE = data.get('spreadsheets').get('planetary_range')
+    SALVAGE_RANGE = data.get('spreadsheets').get('salvage_range')
+    ORE_MARKET_RANGE = data.get('spreadsheets').get('ore_range')
+    MINERAL_MARKET_RANGE = data.get('spreadsheets').get('mineral_market_range')
+    PLANETARY_MARKET_RANGE = data.get('spreadsheets').get('planetary_market_range')
+    SALVAGE_MARKET_RANGE = data.get('spreadsheets').get('salvage_market_range')
 
 bot = commands.Bot(command_prefix='$')
 
@@ -30,17 +37,49 @@ async def on_ready():
 
 @bot.command(name='prices')
 async def prices(ctx):
-    data = updatePrices()
+    data = updatePrices(ORE_RANGE)
     response = 'Purchasing all ore at following prices. Contract any amount to Lena70 Xiahou at the listed Buy Order Price in Berta, Maspah or Camal.\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[3])
+    await ctx.send(response)
+
+@bot.command(name='ore-market-prices')
+async def oreMarketPrices(ctx):
+    data = updatePrices(ORE_MARKET_RANGE)
+    response = 'List of current market prices for ores.\n'
+    for row in data:
+        response = response + '{} {} \n'.format(row[0], row[1])
+    await ctx.send(response)
+
+@bot.command(name='mineral-market-prices')
+async def mineralMarketPrices(ctx):
+    data = updatePrices(MINERAL_MARKET_RANGE)
+    response = 'List of current market prices for minerals.\n'
+    for row in data:
+        response = response + '{} {} \n'.format(row[0], row[1])
+    await ctx.send(response)
+
+@bot.command(name='planetary-market-prices')
+async def planetaryMarketPrices(ctx):
+    data = updatePrices(PLANETARY_MARKET_RANGE)
+    response = 'List of current market prices for planetary products.\n'
+    for row in data:
+        response = response + '{} {} \n'.format(row[0], row[1])
+    await ctx.send(response)
+
+@bot.command(name='salvage-market-prices')
+async def salvageMarketPrices(ctx):
+    data = updatePrices(SALVAGE_MARKET_RANGE)
+    response = 'List of current market prices for salvaged materials.\n'
+    for row in data:
+        response = response + '{} {} \n'.format(row[0], row[1])
     await ctx.send(response)
 
 def formatPrices(data):
     result = data
     return result
 
-def updatePrices():
+def updatePrices(range):
     creds = None
     if os.path.exists('token.pickle'):
         with open('token.pickle', 'rb') as token:
@@ -61,7 +100,7 @@ def updatePrices():
     # Call the Sheets API
     sheet = service.spreadsheets()
     result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                                range=ORE_RANGE).execute()
+                                range=range).execute()
     values = result.get('values', [])
 
     if not values:
