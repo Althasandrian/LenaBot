@@ -17,7 +17,7 @@ SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 with open('credentials.json', 'rb') as json_file:
     data = json.load(json_file)
     DISCORD_TOKEN = data.get('discord').get('token')
-    SPREADSHEET_ID = data.get('spreadsheets').get('sheet_id')
+    MARKET_SPREADSHEET_ID = data.get('spreadsheets').get('market_sheet_id')
     ORE_RANGE = data.get('spreadsheets').get('ore_range')
     MINERAL_RANGE = data.get('spreadsheets').get('mineral_range')
     PLANETARY_RANGE = data.get('spreadsheets').get('planetary_range')
@@ -32,18 +32,19 @@ bot = commands.Bot(command_prefix='$')
 def main():
     bot.run(DISCORD_TOKEN)
 
+## Bot functions
+
 @bot.event
 async def on_ready():
     print("LenaBot has connected to Discord")
 
-@tasks.loop(minutes=10)
-async def updateStandings():
-
-    await ctx.send("asd")
+#@tasks.loop(minutes=10)
+#async def updateStandings():
+#    await ctx.send("asd")
 
 @bot.command(name='prices')
 async def prices(ctx):
-    data = updatePrices(ORE_RANGE)
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_RANGE)
     response = 'Purchasing all ore at following prices. Contract any amount to **Lena70 Xiahou** at the listed Buy Order Price in **Berta, Maspah or Camal.**\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[3])
@@ -51,7 +52,7 @@ async def prices(ctx):
 
 @bot.command(name='ore-market-prices')
 async def oreMarketPrices(ctx):
-    data = updatePrices(ORE_MARKET_RANGE)
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_MARKET_RANGE)
     response = 'List of current market prices for ores.\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[1])
@@ -59,7 +60,7 @@ async def oreMarketPrices(ctx):
 
 @bot.command(name='mineral-market-prices')
 async def mineralMarketPrices(ctx):
-    data = updatePrices(MINERAL_MARKET_RANGE)
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, MINERAL_MARKET_RANGE)
     response = 'List of current market prices for minerals.\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[1])
@@ -67,7 +68,7 @@ async def mineralMarketPrices(ctx):
 
 @bot.command(name='planetary-market-prices')
 async def planetaryMarketPrices(ctx):
-    data = updatePrices(PLANETARY_MARKET_RANGE)
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, PLANETARY_MARKET_RANGE)
     response = 'List of current market prices for planetary products.\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[1])
@@ -75,12 +76,15 @@ async def planetaryMarketPrices(ctx):
 
 @bot.command(name='salvage-market-prices')
 async def salvageMarketPrices(ctx):
-    data = updatePrices(SALVAGE_MARKET_RANGE)
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, SALVAGE_MARKET_RANGE)
     response = 'List of current market prices for salvaged materials.\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[1])
     await ctx.send(response)
 
+## Sheets functions
+
+#Construct authentication and the service for sheets.
 def getSheetsService():
     creds = None
     if os.path.exists('token.pickle'):
@@ -99,12 +103,11 @@ def getSheetsService():
             pickle.dump(creds, token)
     return build('sheets', 'v4', credentials=creds)
 
-def updatePrices(range):
+# Get data from sheets
+def fetchSheetsData(sheets_id, range):
     service = getSheetsService()
-    # Call the Sheets API
     sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID,
-                                range=range).execute()
+    result = sheet.values().get(spreadsheetId=sheets_id, range=range).execute()
     values = result.get('values', [])
 
     if not values:
@@ -112,5 +115,6 @@ def updatePrices(range):
     else:
         return values
 
+#main is main
 if __name__ == '__main__':
     main()
