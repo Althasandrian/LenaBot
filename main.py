@@ -75,10 +75,6 @@ async def salvageMarketPrices(ctx):
         response = response + '{} {} \n'.format(row[0], row[1])
     await ctx.send(response)
 
-def formatPrices(data):
-    result = data
-    return result
-
 def updatePrices(range):
     creds = None
     if os.path.exists('token.pickle'):
