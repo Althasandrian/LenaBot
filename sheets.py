@@ -9,9 +9,6 @@ from google.auth.transport.requests import Request
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-def main():
-    print("This is not main.py")
-
 ## Sheets functions
 
 #Construct authentication and the service for sheets.
@@ -44,8 +41,3 @@ def fetchSheetsData(sheets_id, range):
         print('No data found.')
     else:
         return values
-
-#main is main
-if __name__ == '__main__':
-    main()
-    
