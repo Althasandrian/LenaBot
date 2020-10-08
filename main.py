@@ -41,7 +41,8 @@ async def on_ready():
 async def checkPrice(ctx):
     msg = ctx.message.content
     data = fetchSheetsData(MARKET_SPREADSHEET_ID, EVE_ECHOES_MARKET_DUMP_RANGE)
-    query = msg.split()
+    query = msg.split(" ", 1)
+    print(query)
     for row in data:
         if row[1].lower() == query[1].lower():
             response = '{}\n Buy: {}\n Sell: {}'.format(row[1], row[3], row[4])
