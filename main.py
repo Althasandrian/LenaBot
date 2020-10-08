@@ -20,6 +20,7 @@ with open('credentials.json', 'rb') as json_file:
     MINERAL_MARKET_RANGE = data.get('spreadsheets').get('mineral_market_range')
     PLANETARY_MARKET_RANGE = data.get('spreadsheets').get('planetary_market_range')
     SALVAGE_MARKET_RANGE = data.get('spreadsheets').get('salvage_market_range')
+    EVE_ECHOES_MARKET_DUMP_RANGE = data.get('spreadsheets').get('eve_echoes_market_dump')
 
 bot = commands.Bot(command_prefix='$')
 
@@ -35,6 +36,19 @@ async def on_ready():
 #@tasks.loop(minutes=10)
 #async def updateStandings():
 #    await ctx.send("asd")
+
+@bot.command(name='check')
+async def checkPrice(ctx):
+    msg = ctx.message.content
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, EVE_ECHOES_MARKET_DUMP_RANGE)
+    query = msg.split()
+    for row in data:
+        if row[1].lower() == query[1].lower():
+            response = response + '{}\n Buy: {}\n Sell: {}'.format(row[1], row[3], row[4])
+            break
+        else:
+            response = "Queried item not found."
+    await ctx.send(response)
 
 @bot.command(name='prices')
 async def prices(ctx):
