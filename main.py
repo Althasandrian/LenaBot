@@ -44,7 +44,7 @@ async def checkPrice(ctx):
     query = msg.split(" ", 1)
     for row in data:
         if row[1].lower() == query[1].lower():
-            response = '{}\n Buy: {}\n Sell: {}'.format(row[1], row[3], row[4])
+            response = '{}\n Sell: {}\n Buy: {}'.format(row[1], row[3], row[4])
             break
         else:
             response = "Queried item not found."
