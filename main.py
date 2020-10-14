@@ -44,9 +44,9 @@ async def checkReprocess(ctx):
     msg = ctx.message.content
     data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_REPROCESSING_RANGE)
     ore = msg.split(" ", 2)
-    amount = int(math.floor(float(ore[2])/100))
+    amount = int(math.floor(float(ore[1])/100))
     for row in data:
-        if row[0].lower() == ore[1].lower():
+        if row[0].lower() == ore[2].lower():
             response = "Reprocessing {} {} yields:\n".format(amount * 100, row[0])
             if len(row) >= 3:
                 if row[2] != "":
