@@ -3,6 +3,7 @@ import os.path
 import os
 import discord
 import json
+import math
 from discord.ext import commands, tasks
 from itertools import cycle
 from sheets import fetchSheetsData
@@ -21,6 +22,7 @@ with open('credentials.json', 'rb') as json_file:
     PLANETARY_MARKET_RANGE = data.get('spreadsheets').get('planetary_market_range')
     SALVAGE_MARKET_RANGE = data.get('spreadsheets').get('salvage_market_range')
     EVE_ECHOES_MARKET_DUMP_RANGE = data.get('spreadsheets').get('eve_echoes_market_dump')
+    ORE_REPROCESSING_RANGE = data.get('spreadsheets').get('ore_reprosessing_range')
 
 bot = commands.Bot(command_prefix='$')
 
@@ -36,6 +38,44 @@ async def on_ready():
 #@tasks.loop(minutes=10)
 #async def updateStandings():
 #    await ctx.send("asd")
+
+@bot.command(name='reprocess')
+async def checkReprocess(ctx):
+    msg = ctx.message.content
+    data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_REPROCESSING_RANGE)
+    ore = msg.split(" ", 2)
+    amount = int(math.floor(float(ore[2])/100))
+    for row in data:
+        if row[0].lower() == ore[1].lower():
+            response = "Reprocessing {} yields:\n".format(row[0])
+            if len(row) >= 3:
+                if row[2] != "":
+                    response = response + "Tritanium: {}\n".format(amount * float(row[2]))
+            if len(row) >= 4:
+                if row[3] != "":
+                    response = response + "Pyerite: {}\n".format(amount * float(row[3]))
+            if len(row) >= 5:
+                if row[4] != "":
+                    response = response + "Mexallon: {}\n".format(amount * float(row[4]))
+            if len(row) >= 6:
+                if row[5] != "":
+                    response = response + "Isogen: {}\n".format(amount * float(row[5]))
+            if len(row) >= 7:
+                if row[6] != "":
+                    response = response + "Nocxium: {}\n".format(amount * float(row[6]))
+            if len(row) >= 8:
+                if row[7] != "":
+                    response = response + "Zydrine: {}\n".format(amount * float(row[7]))
+            if len(row) >= 9:
+                if row[8] != "":
+                    response = response + "Megacyte: {}\n".format(amount * float(row[8]))
+            if len(row) >= 10:
+                if row[9] != "":
+                    response = response + "Morphite: {}\n".format(amount * float(row[9]))
+            break
+        else:
+            response = "Queried item not found."
+    await ctx.send(response)
 
 @bot.command(name='check')
 async def checkPrice(ctx):
