@@ -47,7 +47,7 @@ async def checkReprocess(ctx):
     amount = int(math.floor(float(ore[2])/100))
     for row in data:
         if row[0].lower() == ore[1].lower():
-            response = "Reprocessing {} yields:\n".format(row[0])
+            response = "Reprocessing {} {} yields:\n".format(amount * 100, row[0])
             if len(row) >= 3:
                 if row[2] != "":
                     response = response + "Tritanium: {}\n".format(amount * float(row[2]))
