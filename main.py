@@ -93,7 +93,7 @@ async def checkPrice(ctx):
 @bot.command(name='prices')
 async def prices(ctx):
     data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_RANGE)
-    response = 'Purchasing all ore at following prices. Contract any amount to **Lena70 Xiahou** at the listed Buy Order Price in **Berta, Maspah or Camal.**\n'
+    response = 'Purchasing all ore at following prices. Contract any amount to **Lena70 Xiahou** at the listed price in the following locations: \n **Maspah V - Moon 6 - DED Assembly Plant \n Berta VI - Moon 2 - Royal Khanid Navy Logistic Support \n Camal IX - Ammatar Fleet Testing Facilities \n Faspera I - Ammatar Fleet Testing Facilities \n Chidah V - CONCORD Assembly Plant**\n\nMineral Prices:\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[3])
     await ctx.send(response)
