@@ -93,13 +93,13 @@ async def checkPrice(ctx):
 @bot.command(name='prices')
 async def prices(ctx):
     data = fetchSheetsData(MARKET_SPREADSHEET_ID, ORE_RANGE)
-    response = 'Purchasing all ore at following prices. Contract any amount to **Lena70 Xiahou** at the listed price in the following locations: \n **Maspah V - Moon 6 - DED Assembly Plant \n Berta VI - Moon 19 - Ammatar Consulate Bureau \n Camal IX - Ammatar Fleet Testing Facilities \n Faspera I - Ammatar Fleet Testing Facilities \n Sakhti VIII - Moon 5 - Ardishapur Family Bureau \n Ziriert VIII - Moon 3 - Zoar and Sons Factory**\n\nOre Prices:\n'
+    response = 'Purchasing all ore at following prices. Contract any amount to **Lena Forsworn** at the listed price in the following locations: \n **Sakhti VIII - Moon 5 - Ardishapur Family Bureau \n Ziriert VIII - Moon 3 - Zoar and Sons Factory**\n\nOre Prices:\n'
     for row in data:
         response = response + '{} {} \n'.format(row[0], row[3])
-    data = fetchSheetsData(MARKET_SPREADSHEET_ID, PLANETARY_RANGE)
-    response = response + '\nAnd the following Planetary Products at the following prices:\n'
-    for row in data:
-        response = response + '{} {} \n'.format(row[0], row[2])
+#    data = fetchSheetsData(MARKET_SPREADSHEET_ID, PLANETARY_RANGE)
+#    response = response + '\nAnd the following Planetary Products at the following prices:\n'
+#    for row in data:
+#        response = response + '{} {} \n'.format(row[0], row[2])
     await ctx.send(response)
 
 @bot.command(name='ore-market-prices')
